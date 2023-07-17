@@ -1,4 +1,4 @@
-import Debounce from "lodash";
+import thr from "lodash";
 
 const elementLinks = {
     // get element '<form>'
@@ -21,34 +21,34 @@ if(storageValue !== null) {
     elementLinks.formMessage.value = storageValue.message;
 } 
 
-// handler of '<form>' event
-const eventHandler = function(e) {
+// handler of 'inputs' event
+const inputHandler = function() {
+    // get value of 'email' and 'message' fields
+    const { elements: { email, message } } = elementLinks.formElement; 
+   
+    // add data to local storage
+    localStorage.setItem("feedback-form-state",  
+    JSON.stringify({email: email.value, message: message.value}));
+}
+
+// handler of 'submit' event
+const clickHandler = function(e) {
 
     e.preventDefault();
 
     // "submit" button event
-    if(e.target.getAttribute("type") === "submit" 
-    && elementLinks.formEmail.value !== null && elementLinks.formMessage.value !== null) {
-       // output 'input's values
-       console.log(getStorageValue());
+    if(elementLinks.formEmail.value === "" || elementLinks.formMessage.value === "") 
+        return alert('All fields must be filled!');
+    // output 'input's values
+    console.log(getStorageValue());
 
-       // clear storage
-       localStorage.clear();
+    // clear storage
+    localStorage.clear('feedback-form-state');
 
-       // clear 'input's fields
-       elementLinks.formEmail.value = "";
-       elementLinks.formMessage.value = "";
-
-       return;
-    }
-
-    // get value of 'email' and 'message' fields
-    const { elements: { email, message } } = elementLinks.formElement; 
-   
-    localStorage.setItem("feedback-form-state",  
-    JSON.stringify({email: email.value, message: message.value}));
+    // clear 'input's fields
+    elementLinks.formElement.reset();
 };
 
-// add '<form>' event handler
-elementLinks.formElement.addEventListener('input', Debounce._.debounce(eventHandler, 500, {"trailing": true}));
-elementLinks.formElement.addEventListener('click', eventHandler);
+// add event handler
+elementLinks.formElement.addEventListener('input', thr._.throttle(inputHandler, 500));
+elementLinks.formElement.addEventListener('submit', clickHandler);
