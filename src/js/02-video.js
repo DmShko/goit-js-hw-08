@@ -1,12 +1,12 @@
 import Player from "@vimeo/player";
-import thr from "lodash";
+import throttle from "lodash.throttle";
 
 // get "iframe" selector link
 const myIframe = document.querySelector('iframe');
 
 // get "Go back" selector link
 const backLink = document.querySelector('a');
-console.log(backLink);
+// console.log(backLink);
 
 // new prototype of Player
 const player = new Player(myIframe);
@@ -21,10 +21,4 @@ const getTime = function(time) {
 }
 
 // 'timeupdate' event handler every 1 sec (with 'throttle' option 'leading')
-player.on('timeupdate', thr._.throttle(getTime, 1000, {'leading': true}));
-
-// clear storage and 
-// delete 'timeupdate' event handler if time video end
-backLink.addEventListener('click', () => {
-    localStorage.clear('videoplayer-current-time');
-});
+player.on('timeupdate', throttle(getTime, 1000));

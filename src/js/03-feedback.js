@@ -1,4 +1,4 @@
-import thr from "lodash";
+import throttle from "lodash.throttle";
 
 const elementLinks = {
     // get element '<form>'
@@ -43,12 +43,12 @@ const clickHandler = function(e) {
     console.log(getStorageValue());
 
     // clear storage
-    localStorage.clear('feedback-form-state');
+    localStorage.removeItem('feedback-form-state');
 
     // clear 'input's fields
     elementLinks.formElement.reset();
 };
 
 // add event handler
-elementLinks.formElement.addEventListener('input', thr._.throttle(inputHandler, 500));
+elementLinks.formElement.addEventListener('input', throttle(inputHandler, 500));
 elementLinks.formElement.addEventListener('submit', clickHandler);
